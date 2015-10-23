@@ -7,16 +7,18 @@ var path = require('path');
 
 // defining our routes, for the router function
 var pages = [
-    {route: '', output: 'Whoohoo!'},
-    {route: 'about', output: 'A simple routing example with Node'},
+    {route: '/',  output: 'Whoohoo!'},
+    {route: '/about', output: 'A simple routing example with Node'},
     // anonymous function
-    {route: 'another page', output:  function() {return 'Here\'s ' + this.route; } }
+    {route: '/another page', output:  function() {return 'Here\'s ' + this.route; } },
+    {route: '/about/me', output: 'My name is David'}
 ];
 
 http.createServer(function(request,response) {
     // first get the part of the URI after host name
     // decode the URI so spaces look like %20
-    var lookup = path.basename(decodeURI(request.url));
+    // when using just decodeURI, add '/' to the routing
+    var lookup = decodeURI(request.url);
 
     // for each possible route in the array check against  incoming lookup
     pages.forEach(function(page) {
