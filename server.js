@@ -55,33 +55,30 @@ http.createServer(function(request,response) {
             return;
         }
         response.writeHead(404);
-        response.end('Static Page Not Found!');
+        response.end('Page Not Found!');
         return;
     });
 
 
-    if (id ) {
-        // for each possible route in the array check against  incoming query id
-        pages.forEach(function(page) {
-            if (page.id === id) {
-                response.writeHead(200, {'Content-Type': 'text/html'});
-                // respone can be a string or  function call, a noun or a verb
-                response.end(typeof page.output === 'function' ? page.output() : page.output);
-            }
-        });
-    } else {
-        // for each possible route in the array check against  incoming lookup
-        pages.forEach(function(page) {
-            if (page.route === lookup) {
-                response.writeHead(200, {'Content-Type': 'text/html'});
-                // respone can be a string or  function call, a noun or a verb
-                response.end(typeof page.output === 'function' ? page.output() : page.output);
-            }
-        });
+   // for each possible route in the array check against  incoming lookup
+    pages.forEach(function(page) {
+        if (page.route === lookup) {
+            response.writeHead(200, {'Content-Type': 'text/html'});
+            // respone can be a string or  function call, a noun or a verb
+            response.end(typeof page.output === 'function' ? page.output() : page.output);
+        } else if (id ) {
+            // for each possible route in the array check against  incoming query id
+            pages.forEach(function(page) {
+                if (page.id === id) {
+                    response.writeHead(200, {'Content-Type': 'text/html'});
+                    // respone can be a string or  function call, a noun or a verb
+                    response.end(typeof page.output === 'function' ? page.output() : page.output);
+                }
+            });
         }
+    });
 
- //   if (!response.finished) {
- //       response.writeHead(404);
- //       response.end('Page Not Found! Fall through error...');
- //   }
+
+
+
 }).listen(8080);
