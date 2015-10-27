@@ -26,13 +26,30 @@ var mimeTypes = {
     '.css' : 'text/css'
 };
 
+// make cache for static files
+var cache = {};
+
+// function to get  and put stuff into cache
+function cacheAndDeliver(filepath, cb) {
+    if ( !cache[filepath]) {
+        fs.readFile(filepath, function(err, data) {
+            if (!err){
+                cache[filepath] = {content : data};
+            }
+            cb(err, data);
+        });
+        return;
+    }
+    console.log( 'loading ' + filepath + ' from cache'  );
+    cb( null,  cache[filepath].content );
+}
 
 http.createServer(function(request,response) {
     // first get the part of the URI after host name
     // decode the URI so spaces look like %20
     // when using just decodeURI, add '/' to the routing
     var lookup = decodeURI(request.url) || 'index.html';
-    f = 'content/' + lookup;
+    filepath = 'content/' + lookup;
 
 
     // check if there is a query string
@@ -40,10 +57,10 @@ http.createServer(function(request,response) {
 
     // checking to serve static
     // this is assynchronus, uses callback function
-    fs.exists(f, function(exists) {
+    fs.exists(filepath, function(exists) {
         console.log(exists ? lookup + " is a static file " : lookup + " is not a static file");
         if (exists) {
-            fs.readFile(f,  function(err, data) {
+            cacheAndDeliver(filepath,  function(err, data) {
                 if (err) {
                     response.writeHead(500);
                     response.end('Server error!! ');
