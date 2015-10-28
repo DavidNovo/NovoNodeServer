@@ -27,22 +27,28 @@ var mimeTypes = {
 };
 
 // make cache for static files
+//this is an object
 var cache = {};
 
 // function to get  and put stuff into cache
 function cacheAndDeliver(filepath, cb) {
-    if ( !cache[filepath]) {
-        fs.readFile(filepath, function(err, data) {
-            if (!err){
-                cache[filepath] = {content : data};
+    // adding in some stuff for time checking
+    fs.stat(filepath,  function(err, stats) {
+        var lastChanged = Date.parse(stats.ctime);
+        isUpdated = (cache[filepath]) && lastChanged > cache[filepath].timestamp;
+            if ( !cache[filepath] || isUpdated ) {
+                fs.readFile(filepath, function(err, data) {
+                    if (!err){
+                        cache[filepath] = {content : data, timestamp: Date.now()};  // store a Unix timestamp
+                    }
+                    cb(err, data);
+                });
+                return;
             }
-            cb(err, data);
-        });
-        return;
-    }
-    console.log( 'loading ' + filepath + ' from cache'  );
-    cb( null,  cache[filepath].content );
-}
+            console.log( 'loading ' + filepath + ' from cache'  );
+            cb( null,  cache[filepath].content );
+    }); // end of fs.stat
+} // end of cacheAndDeliver
 
 http.createServer(function(request,response) {
     // first get the part of the URI after host name
