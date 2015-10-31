@@ -45,7 +45,7 @@ function cacheAndDeliver(filepath, cb) {
                 });
                 return;
             }
-            console.log( 'loading ' + filepath + ' from cache'  );
+            //console.log( 'loading ' + filepath + ' from cache'  );
             cb( null,  cache[filepath].content );
     }); // end of fs.stat
 } // end of cacheAndDeliver
@@ -64,7 +64,7 @@ http.createServer(function(request,response) {
     // checking to serve static
     // this is assynchronus, uses callback function
     fs.exists(filepath, function(exists) {
-        console.log(exists ? lookup + " is a static file " : lookup + " is not a static file");
+       // console.log(exists ? lookup + " is a static file " : lookup + " is not a static file");
         if (exists) {
             cacheAndDeliver(filepath,  function(err, data) {
                 if (err) {
