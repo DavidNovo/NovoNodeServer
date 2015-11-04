@@ -93,5 +93,11 @@ describe('basic tests of server ', function() {
                   });
             });
 
+      it('contacting the server root URL/about should return 200', function (done) {
+            http.get('http://localhost:8080/about', function (res) {
+                  assert.equal(200, res.statusCode);
+                  done();
+            });
+      });
 }); // end of basic tests
 
