@@ -48,6 +48,15 @@ describe('basic tests of server ', function() {
     });
 
 
+    describe(' send this URI to the server ?id=xxx should return an HTTP status of 404', function() {
+        it(' requesting ?id=xxx from the server should return 404', function(done) {
+            http.get('http://localhost:8080/?id=xxx', function(res) {
+                assert.equal(404, res.statusCode);
+                done();
+            });
+        });
+    });
+
     it('contacting the server root URL should return 200', function(done) {
         http.get('http://localhost:8080/', function(res) {
             assert.equal(200, res.statusCode);
@@ -90,13 +99,6 @@ describe('basic tests of server ', function() {
                 assert.equal('A simple routing example with Node', data);
                 done();
             });
-        });
-    });
-
-    it('contacting the server root URL/about should return 200', function(done) {
-        http.get('http://localhost:8080/about', function(res) {
-            assert.equal(200, res.statusCode);
-            done();
         });
     });
 }); // end of basic tests
